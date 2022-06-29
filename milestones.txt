@@ -1,0 +1,24 @@
+Authentication:
+	1. Register
+	2. Login
+	3. Change password when logged in
+	4. Update user profile
+	
+	url paths:
+		--> logout
+			 auth/token/logout
+
+		--> login
+			 auth/token/login
+
+		--> register
+			 auth/users
+
+		--> reset password
+			 auth/users/set_password
+
+
+
+Customer:
+	1. Add shipping address
+	2. Add billing address
