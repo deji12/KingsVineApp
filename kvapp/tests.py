@@ -3,25 +3,28 @@ from django.test import TestCase
 # Create your tests here.
 import requests
 import json
-# url = 'http://127.0.0.1:8000/auth/users/'
+url = 'http://127.0.0.1:8000/auth/create-user/'
 
-# response = requests.post(
-#     url,
-# #     headers = {
-# #     'Content-Type': 'multipart/form-data',
-# #   },
-#     json = {
-#         'username': 'rick',
-#         'email': 'theprotonguy@yahoo.com',
-#         'password':'billieeilish',
-#         're_password':'billieeilish',
-#         'first_name': 'ayo',
-#         'last_name': 'deji'
-#     },
-    
-# )
+response = requests.post(
+    url,
+#     headers = {
+#     'Content-Type': 'multipart/form-data',
+#   },
+    json = {
+        'email': 'theprotongtuy@yahoo.com',
+        'username': 'rick',
+        'password':'bill',
+        'confirm_password':'billieeilish',
+        'first_name': 'ayo',
+        'last_name': 'deji',
+        'shop_name': 'The proton shop',
+        'shop_url': 'https://www.theprotonguy.herokuapp.com'
+    },
+)
 
-# print(response._content)
+print(response._content)
+# print(response._content.decode().split(",")[1])
+# print(response._content.decode()[14:40])
 
 # login_url = 'http://127.0.0.1:8000/auth/token/login'
 # response = requests.post(
@@ -182,20 +185,20 @@ import json
 
 
 # update user profile
-url = 'http://127.0.0.1:8000/auth/update-user-profile/'
-response = requests.put(
-    url,
-    headers = {
-        'authorization': 'Token b58ec67f2ecb4f5d024e4448caa0918690dc5171'
-    },
-    json = {
+# url = 'http://127.0.0.1:8000/auth/update-user-profile/'
+# response = requests.put(
+#     url,
+#     headers = {
+#         'authorization': 'Token b58ec67f2ecb4f5d024e4448caa0918690dc5171'
+#     },
+#     json = {
         
-        'username':'eilish',
-        'email': 'billie@gmail.com',
-        'first_name':'finneas',
+#         'username':'eilish',
+#         'email': 'billie@gmail.com',
+#         'first_name':'finneas',
        
-    },
+#     },
     
-)
+# )
 
-print(response._content)
+# print(response._content)

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('djoser.urls.authtoken')),
     path('restricted/', views.restricted),
     path('all-users/', views.all_users),
+    path('create-user/', views.CreateUser),
     path('update-user-password/', views.UpdateUserPassword),
     path('update-user-profile/', views.UpdateUserProfile),
 ]

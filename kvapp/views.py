@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.http import JsonResponse
-from .serializers import UpdateUserPasswordSerializer, UpdateUserProfileSerializer
+from .serializers import UpdateUserPasswordSerializer, UpdateUserProfileSerializer,UserCreateSerializer
 from .serializers import AllUsersSerializer
 from kvapp import serializers
 
@@ -25,6 +25,35 @@ def all_users (request):
     serializer = AllUsersSerializer(users,many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+def CreateUser(request):
+    if request.method == 'POST':
+        serializer =  UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = User.objects.create_user(
+                username=request.data.get('username'),
+                email=request.data.get('email'),
+                first_name= request.data.get('first_name'),
+                last_name = request.data.get('last_name'),
+                phone = request.data.get('phone'),
+                password= request.data.get('password'),
+                shop_url= request.data.get('shop_url'),
+                shop_name= request.data.get('shop_name'),
+            )
+            if len(request.data.get('password')) < 8:
+                return Response({'Error': 'Passwords is too short'})
+            if request.data.get('password') == request.data.get('confirm_password'):
+                if request.data.get('vendor') == 'True':
+                    user.vendor = True
+                else:
+                    user.vendor = False
+                user.save()
+                return Response(data='User Created Successfully')
+            else:
+                return Response({'Error': 'Passwords do not match'})
+        else:
+            data = serializer.errors
+            return Response(data)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
