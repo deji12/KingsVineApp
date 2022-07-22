@@ -20,5 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('kvapp.urls')),
     path('customers/', include('Customers.urls')),
-    path('products/', include('products.urls')),
+    path('', include('products.urls')),
+    path('vendor/', include('vendor.urls')),
+    path('', include('home.urls')),
 ]

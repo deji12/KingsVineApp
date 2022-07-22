@@ -22,3 +22,8 @@ Authentication:
 Customer:
 	1. Add shipping address
 	2. Add billing address
+
+Remember:
+	User Creation:
+		check if user exists by username and email
+		

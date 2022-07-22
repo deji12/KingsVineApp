@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form action="http://127.0.0.1:8000/products/add-product/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" required name="product_name" placeholder="product name">
+            <input type="text" required name="price" placeholder="price">
+            <input type="text" required name="discounted_price" placeholder="discounted price">
+            <textarea name="description" id="" cols="30" rows="10" placeholder="description"></textarea>
+            <input type="text" name="category" placeholder="category">
+            <input type="text" name="sub_category" placeholder="sub category">
+            <input type="text" name="tag" placeholder="tags">
+            <input type="file" name="image1">
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+<style>
+    .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: grey;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #fff;
+}
+
+form input {
+    width: 500px;
+    padding: 10px;
+    border: 1px solid dodgerblue;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+form textarea {
+    width: 500px;
+    padding: 10px;
+    border: 1px solid dodgerblue;
+    border-radius: 10px;
+}
+
+form button {
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    background-color: dodgerblue;
+    border: none;
+    width: 530px;
+}
+
+form button:hover {
+    padding: 15px;
+    transition: 0.8s;
+}
+
+</style>
+</body>
+</html>
