@@ -49,15 +49,15 @@ import base64
 
 # print(response._content)
 
-url = 'http://127.0.0.1:8000/product-category/Tech/Robot/'
+url = 'http://127.0.0.1:8000/product-category/women/beauty/Make Up/'
 
-response = requests.get(
+response = requests.post(
     url,
     # headers = {
     #     'authorization': 'Token fe036843608f4d6965cfc23ea073417be6c55866',        
     # },
     # json = {
-    #     'sort_type': 'Sort by price: low to high'
+    #     'sort_type': 'Sort by price: low to high',
     # }
 )
 print(response._content)

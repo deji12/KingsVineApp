@@ -47,3 +47,52 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
+class brand(models.Model):
+    brand_name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.brand_name
+
+class clothing(models.Model):
+    cloth_name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.cloth_name
+
+class shoe(models.Model):
+    shoe_type = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.shoe_type 
+
+class face_and_body(models.Model):
+    name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.name
+
+class accessories(models.Model):
+    accessory_name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.accessory_name
+
+class beauty(models.Model):
+    beauty_product_name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.beauty_product_name
+
+class kids(models.Model):
+    product_name = models.CharField(max_length=225)
+    gender = models.CharField(max_length=225)
+
+    def __str__(self):
+        return self.product_name

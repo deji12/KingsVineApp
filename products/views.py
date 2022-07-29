@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .serializers import ProductSerializer, SubCategoriesSerializer, CategoriesSerializer
+from .serializers import AccessoriesSerializer, ProductSerializer, SubCategoriesSerializer, CategoriesSerializer, BrandSerializer, BeautySerializer, FaceAndBodySerializer, ClothingSerializer, KidsSerializer, ShoeSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from kvapp.models import User
 from products import serializers
-from .models import Product, Category, SubCategory
+from .models import Product, Category, SubCategory, brand, beauty, face_and_body, clothing, shoe, accessories, kids
 from django.core.mail import EmailMessage
 from django.conf import settings
 import datetime
@@ -245,6 +245,7 @@ def Catalog(request):
     serializer = ProductSerializer(get_products, many=True)
     return Response(serializer.data)
  
+#view for getting products by their category
 @api_view(['GET'])
 def CategoryView(request, category):
     get_category = Category.objects.get(name=category)
@@ -252,6 +253,7 @@ def CategoryView(request, category):
     serializer = ProductSerializer(get_products_by_category, many=True)
     return Response(serializer.data)
 
+#view for getting products by their category and sub category
 @api_view(['GET'])
 def SubCategoryView(request, category, subcategory):
     get_category = Category.objects.get(name=category)
@@ -260,4 +262,277 @@ def SubCategoryView(request, category, subcategory):
     serializer = ProductSerializer(get_products_by_sub_category, many=True)
     return Response(serializer.data)
 
+@api_view(['GET', 'POST'])
+def SearchProductView(request):
+    search_value = request.data.get('search')
+    filter_for_product_containing_search_name = Product.objects.filter(name__icontains=search_value).order_by('-date_created')
+    if filter_for_product_containing_search_name:
+        serializer = ProductSerializer(filter_for_product_containing_search_name, many=True)
+        return Response(serializer.data)
+    else:
+        return Response(f'Sorry, but nothing matched your search terms. Please try again with some different keywords.')
 
+@api_view(['GET'])
+def Brands(request):
+    all_brands = brand.objects.all()[:15]
+    serializer = BrandSerializer(all_brands, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def ClothingView(request):
+    all_clothing = clothing.objects.all()[:15]
+    serializer = ClothingSerializer(all_clothing, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def ShoeView(request):
+    all_shoes = shoe.objects.all()[:15]
+    serializer = ShoeSerializer(all_shoes, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def FaceAndBodyView(request):
+    all_face_and_body_products = face_and_body.objects.all()[:15]
+    serializer = FaceAndBodySerializer(all_face_and_body_products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def AccessoriesView(request):
+    all_accessories = accessories.objects.all()[:15]
+    serializer = AccessoriesSerializer(all_accessories, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def BeautyProductsView(request):
+    all_beauty_products = beauty.objects.all()[:15]
+    serializer = BeautySerializer(all_beauty_products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def KidsProductsView(request):
+    all_kid_products = kids.objects.all()[:15]
+    serializer = KidsSerializer(all_kid_products, many=True)
+    return Response(serializer.data)
+
+#view for displaying goods of a SINGLE BRAND
+@api_view(['GET', 'POST'])
+def BrandPageView(request, brand_name):
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(brand=brand_name).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(brand=brand_name).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(brand=brand_name).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(brand=brand_name).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+
+        # send email from contact vendor form
+        if request.data.get('name-input'):
+            # get data from contact form
+            name = request.data.get('name-input')
+            email = request.data.get('email')
+            body = request.data.get('body')
+            email_mess = EmailMessage (
+                f'KV APP: Contact Vendor Form',
+                f'Contact Vendor Form \n \n From: \n \n Name: {name} \n Email: {email} \n Body: {body}', #message
+                settings.EMAIL_HOST_USER,
+                ['adesolaayodeji53@gmail.com'] #receiver
+            )
+            email_mess.fail_silently = True
+            #send email
+            email_mess.send()
+            return Response({'Message': 'Product successfully added, It is under verification'})
+
+
+        # return products based on user search input
+        search_value = request.data.get('search')
+        if search_value:
+            filter_for_product_containing_search_name = Product.objects.filter(brand=brand_name, name__icontains=search_value).order_by('-date_created')
+            if filter_for_product_containing_search_name:
+                serializer = ProductSerializer(filter_for_product_containing_search_name, many=True)
+                return Response(serializer.data)
+            else:
+                return Response(f'Sorry, but nothing matched your search terms. Please try again with some different keywords.')
+
+    get_products_by_brand = Product.objects.filter(brand=brand_name)
+    serializer = ProductSerializer(get_products_by_brand, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def StoreProductCategory(request, brand_name, category):
+    get_category = Category.objects.get(name=category)
+    get_products_by_brand_and_category = Product.objects.filter(category=get_category, brand=brand_name)
+    serializer = ProductSerializer(get_products_by_brand_and_category, many=True)
+    return Response(serializer.data)
+
+#view products by gender and clothing type
+@api_view(['GET', 'POST'])
+def ProductCategoryByGenderAndClothing(request, gender, sub_category_clothing):
+    get_category = Category.objects.get(name='Clothing')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=sub_category_clothing)
+    get_product_by_gender_and_clothing_type = Product.objects.filter(gender=gender, category=get_category, sub_category=get_sub_category)
+
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, category=get_category, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, category=get_category, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, category=get_category, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, category=get_category, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_clothing_type, many=True)
+    return Response(serializer.data)\
+
+#view products by gender and show type
+@api_view(['GET', 'POST'])
+def ProductCategoryByGenderAndShoe(request, gender, shoe_sub_category):
+    get_category = Category.objects.get(name='Shoe')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=shoe_sub_category)
+    get_product_by_gender_and_shoe_type = Product.objects.filter(gender=gender, sub_category=get_sub_category)
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_shoe_type, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+def ProductCategoryByGenderAndFaceAndBody(request, gender, face_body_sub_category):
+    get_category = Category.objects.get(name='Face & Body')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=face_body_sub_category)
+    get_product_by_gender_and_face_body_product = Product.objects.filter(gender=gender, sub_category=get_sub_category)
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_face_body_product, many=True)
+    return Response(serializer.data)
+    
+@api_view(['GET', 'POST'])
+def ProductCategoryByGenderAndAccessory(request, gender, sub_category_accessory):
+    get_category = Category.objects.get(name='Accessories')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=sub_category_accessory)
+    get_product_by_gender_and_accessory = Product.objects.filter(gender=gender, sub_category=get_sub_category)
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_accessory, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+def ProductCategoryByGenderAndBeauty(request, gender, sub_category_beauty):
+    get_category = Category.objects.get(name='Beauty')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=sub_category_beauty)
+    get_product_by_gender_and_beauty = Product.objects.filter(gender=gender, sub_category=get_sub_category)
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_beauty, many=True)
+    return Response(serializer.data)
