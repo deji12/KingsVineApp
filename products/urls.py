@@ -26,4 +26,5 @@ urlpatterns = [
     path('product-category/<str:gender>/face-body/<str:face_body_sub_category>/', views.ProductCategoryByGenderAndFaceAndBody),
     path('product-category/<str:gender>/accessories/<str:sub_category_accessory>/', views.ProductCategoryByGenderAndAccessory),
     path('product-category/<str:gender>/beauty/<str:sub_category_beauty>/', views.ProductCategoryByGenderAndBeauty),
+    path('product-category/kids/<str:gender>/<str:sub_category_kids>/', views.ProductCategoryByKids),
 ]

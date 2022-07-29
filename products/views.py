@@ -536,3 +536,34 @@ def ProductCategoryByGenderAndBeauty(request, gender, sub_category_beauty):
     
     serializer = ProductSerializer(get_product_by_gender_and_beauty, many=True)
     return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+def ProductCategoryByKids(request, gender, sub_category_kids):
+    get_category = Category.objects.get(name='Kids')
+    get_sub_category = SubCategory.objects.get(category=get_category, sub_category_name=sub_category_kids)
+    get_product_by_gender_and_kids = Product.objects.filter(gender=gender, sub_category=get_sub_category)
+    if request.method == 'POST':
+        # return products based on sorting method by user
+        sort = request.data.get('sort_type')
+        if sort:
+            if sort == 'Sort by popularity':
+                get_products_by_popularty = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-clicks')[:36]
+                serializer = ProductSerializer(get_products_by_popularty, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by latest':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-date_created')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: low to high':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+            elif sort == 'Sort by price: high to low':
+                get_products = Product.objects.filter(gender=gender, sub_category=get_sub_category).order_by('-price')[:36]
+                serializer = ProductSerializer(get_products, many=True)
+                return Response(serializer.data)
+        else:
+            pass
+    
+    serializer = ProductSerializer(get_product_by_gender_and_kids, many=True)
+    return Response(serializer.data)
