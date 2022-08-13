@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%jo(6+osos9)vod#2p1rqvs=yk#l2bfi@2*ffsev2a1_-fs0(s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'orders',
     'cloudinary',
     'cloudinary_storage',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -172,3 +173,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#paypal settings
+
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = 'adesolaayodeji18@gmail.com'
