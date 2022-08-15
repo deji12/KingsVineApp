@@ -7,7 +7,7 @@ from kvapp.models import User
 class OrderModel(models.Model):
     product_name = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     product_vendor = models.ForeignKey(User, related_name='product_vendor', on_delete=models.CASCADE, null=True, blank=True)
-    product_price = models.DecimalField(decimal_places=None, max_digits=None, null=True, blank=True)
+    product_price = models.DecimalField(decimal_places=6, max_digits=12, null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     customer = models.ForeignKey(User, related_name='product_customer', on_delete=models.CASCADE, null=True, blank=True)
     customer_billing_address = models.ForeignKey(BillingAddress, on_delete=models.CASCADE, null=True, blank=True)
