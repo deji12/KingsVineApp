@@ -18,7 +18,7 @@ class SubCategory(models.Model):
 class Product(models.Model):
     vendor = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=500, null=True, blank=True)
-    price = models.DecimalField(decimal_places=2, max_digits=100, null=True, blank=True)
+    price = models.DecimalField(decimal_places=None, max_digits=None, null=True, blank=True)
     discounted_price = models.IntegerField(null=True, blank=True)
     verified = models.BooleanField(default=False)
     short_description = models.TextField(null=True, blank=True)
