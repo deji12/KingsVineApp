@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <form action="" method="POST" id="privacy">
+        {% csrf_token %}
+        <!-- <input type="text" name="product_name" placeholder="Product Name"><br>
+        <input type="email" name="vendor" placeholder="vendor"><br>
+        <input type="number" name="price" placeholder="price"><br>
+        <input type="number" name="quantity" placeholder="quantity"><br>
+        <input type="text" name="customer" placeholder="customer"><br> -->
+
+        <input type="submit" value="Submit">
+    </form>
+
+
+<!-- <script>
+$(document).on('submit', '#privacy', function () {
+    list = [1,2,3,4]
+    $.ajax({
+        headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+        method: 'POST',
+        url: '{% url "home" %}',
+        contentType:"application/json",
+        data: {'list': list.join(",")},
+        success: function (data) {
+            //this gets called when server returns an OK response
+            alert("it worked!");
+        },
+        error: function (data) {
+            alert("it didnt work");
+        }
+    });
+});
+    
+</script> -->
+
+<script>
+    $(document).on('submit', '#privacy', function (e) {
+        // e.preventDefault();
+        list = [1,2,3,4]
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'home' %}",
+            contentType:"application/json",
+            data: JSON.stringify({
+                  list: list,
+                 
+              }),
+            success: function (data) {
+                $('#add-note-id').html(data)
+            },
+        });
+    })
+</script>
+</body>
+</html>
