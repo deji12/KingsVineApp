@@ -13,8 +13,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=225)
     phone  = models.CharField(null=True, max_length=225, blank=True)
     vendor = models.BooleanField(default=False)
-    shop_name = models.CharField(max_length=225, default='#')
-    shop_url = models.URLField(max_length=1000, default='#')
+    shop_name = models.CharField(max_length=225, default='#', null=True, blank=True)
+    shop_url = models.URLField(max_length=1000, default='#', null=True, blank=True)
     REQUIRED_FIELDS =  ['username']
     USERNAME_FIELD = 'email'
 

@@ -38,11 +38,17 @@ def CreateUser(request):
                     email=request.data.get('email'),
                     first_name= request.data.get('first_name'),
                     last_name = request.data.get('last_name'),
-                    phone = request.data.get('phone'),
                     password= request.data.get('password'),
-                    shop_url= request.data.get('shop_url'),
-                    shop_name= request.data.get('shop_name'),
                 )
+                if request.data.get('shop_url'):
+                    user.shop_url = request.data.get('shop_url')
+
+                if request.data.get('shop_name'):
+                    user.shop_name = request.data.get('shop_name')
+
+                if request.data.get('phone'):
+                    user.phone = request.data.get('phone')
+
                 if request.data.get('role') == 'customer':
                     user.vendor = False
                 else:
