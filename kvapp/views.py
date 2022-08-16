@@ -43,10 +43,11 @@ def CreateUser(request):
             if len(request.data.get('password')) < 8:
                 return Response({'Error': 'Passwords is too short'})
             if request.data.get('password') == request.data.get('confirm_password'):
-                if request.data.get('vendor') == 'True':
-                    user.vendor = True
-                else:
-                    user.vendor = False
+                if request.data.get('shop_name'):
+                    if request.data.get('shop_url'):
+                        user.vendor = True
+                    else:
+                        user.vendor = False
                 user.save()
                 return Response(data='User Created Successfully')
             else:
@@ -74,7 +75,7 @@ def UpdateUserPassword(request):
                 else:
                     get_user.set_password(request.data['confirmpassword'])
                     get_user.save()
-                    return HttpResponseRedirect(redirect_to='http://127.0.0.1:8000/auth/token/logout/')
+                    return HttpResponseRedirect(redirect_to='https://kvappdj.herokuapp.com/auth/token/logout/')
                     # return Response(data='Password successfully updated')
                     
             else:
