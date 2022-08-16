@@ -30,24 +30,23 @@ def CreateUser(request):
     if request.method == 'POST':
         serializer =  UserCreateSerializer(data=request.data)
         if serializer.is_valid():
-            user = User.objects.create_user(
-                username=request.data.get('username'),
-                email=request.data.get('email'),
-                first_name= request.data.get('first_name'),
-                last_name = request.data.get('last_name'),
-                phone = request.data.get('phone'),
-                password= request.data.get('password'),
-                shop_url= request.data.get('shop_url'),
-                shop_name= request.data.get('shop_name'),
-            )
             if len(request.data.get('password')) < 8:
                 return Response({'Error': 'Passwords is too short'})
             if request.data.get('password') == request.data.get('confirm_password'):
-                if request.data.get('shop_name'):
-                    if request.data.get('shop_url'):
-                        user.vendor = True
-                    else:
-                        user.vendor = False
+                user = User.objects.create_user(
+                    username=request.data.get('username'),
+                    email=request.data.get('email'),
+                    first_name= request.data.get('first_name'),
+                    last_name = request.data.get('last_name'),
+                    phone = request.data.get('phone'),
+                    password= request.data.get('password'),
+                    shop_url= request.data.get('shop_url'),
+                    shop_name= request.data.get('shop_name'),
+                )
+                if request.data.get('role') == 'customer':
+                    user.vendor = False
+                else:
+                    user.vendor = True   
                 user.save()
                 return Response(data='User Created Successfully')
             else:

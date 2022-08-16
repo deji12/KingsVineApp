@@ -13,11 +13,12 @@ response = requests.post(
     json = {
         'email': 'theprotongtuy@yahoo.com',
         'username': 'rick',
-        'password':'bill',
+        'password':'bill6789',
         'confirm_password':'billieeilish',
         'first_name': 'ayo',
         'last_name': 'deji',
         'shop_name': 'The proton shop',
+        'role': 'customer',
         'shop_url': 'https://www.theprotonguy.herokuapp.com'
     },
 )

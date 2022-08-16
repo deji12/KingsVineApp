@@ -21,9 +21,9 @@ class UserCreateSerializer(UserCreateSerializer):
         model = User
         fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'phone', 'shop_name', 'shop_url', 'phone')
 
-    def validate(self, attrs):
-        if len(attrs['password']) < 8:
-            raise serializers.ValidationError({'Error': 'Password too short'})
+    # def validate(self, attrs):
+    #     if len(attrs['password']) < 8:
+    #         raise serializers.ValidationError({'Error': 'Password too short'})
 
 class AllUsersSerializer(serializers.ModelSerializer):
     class Meta:
