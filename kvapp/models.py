@@ -15,7 +15,7 @@ class User(AbstractUser):
     vendor = models.BooleanField(default=False)
     shop_name = models.CharField(max_length=225, default='#')
     shop_url = models.URLField(max_length=1000, default='#')
-    REQUIRED_FIELDS =  ['username', 'phone', 'first_name', 'last_name', 'shop_name', 'shop_url']
+    REQUIRED_FIELDS =  ['username']
     USERNAME_FIELD = 'email'
 
 
