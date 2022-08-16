@@ -3,27 +3,38 @@ from django.test import TestCase
 # Create your tests here.
 import requests
 import json
-url = 'http://127.0.0.1:8000/auth/create-user/'
 
+url = 'http://127.0.0.1:8000/auth/forgot-password/'
 response = requests.post(
     url,
-#     headers = {
-#     'Content-Type': 'multipart/form-data',
-#   },
     json = {
-        'email': 'theprotongtuy@yahoo.com',
-        'username': 'rick',
-        'password':'billieeilish',
-        'confirm_password':'billieeilish',
-        # 'first_name': 'ayo',
-        # 'last_name': 'deji',
-        'shop_name': 'The proton shop',
-        'role': 'customer',
-        'shop_url': 'https://www.theprotonguy.herokuapp.com'
-    },
+        'email': 'adesolaayodeji53@gmail.com'
+    }
 )
-
 print(response._content)
+
+
+# url = 'http://127.0.0.1:8000/auth/create-user/'
+
+# response = requests.post(
+#     url,
+# #     headers = {
+# #     'Content-Type': 'multipart/form-data',
+# #   },
+#     json = {
+#         'email': 'theprotongtuy@yahoo.com',
+#         'username': 'rick',
+#         'password':'billieeilish',
+#         'confirm_password':'billieeilish',
+#         # 'first_name': 'ayo',
+#         # 'last_name': 'deji',
+#         'shop_name': 'The proton shop',
+#         'role': 'customer',
+#         'shop_url': 'https://www.theprotonguy.herokuapp.com'
+#     },
+# )
+
+# print(response._content)
 # print(response._content.decode().split(",")[1])
 # print(response._content.decode()[14:40])
 

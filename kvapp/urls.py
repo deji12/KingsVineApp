@@ -11,6 +11,8 @@ urlpatterns = [
     path('create-user/', views.CreateUser),
     path('update-user-password/', views.UpdateUserPassword),
     path('update-user-profile/', views.UpdateUserProfile),
+    path('forgot-password/', views.ForgotPassword, name='forgot-password'),
+    path('reset-password/<str:username>/<str:code>/', views.ResetPasswordView, name='reset-password'),
 ]
 
 # logout
