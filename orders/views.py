@@ -13,62 +13,60 @@ from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+import stripe
 
+stripe.api_key = "sk_test_51LXlZsBz09LwdcjaxIJTEKWIF0RaVOe0HyAqJ2mE3N5ysEWj7ZE1mGuCfvDmzibpBBVIxhPQLZR8diWVpHOfhliK00iHGNtYEQ"
 
 # @api_view(['POST', 'GET'])
 @csrf_exempt
 def Home(request):
     if request.method == 'POST': 
-        lists = request.POST.get("list")
-        # list = lists.split(",")
-        print(lists)
-        return redirect('home')
         #get incoming data
-    #     product_name = request.POST.get('product_name')
-    #     vendor = request.POST.get('vendor')
-    #     price = request.POST.get('price')
-    #     customer = request.POST.get('customer')
-    #     quantity = request.POST.get('quantity')
-    #     code = 'USD'
-    #     print(product_name)
+        product_name = request.POST.get('product_name')
+        vendor = request.POST.get('vendor')
+        price = request.POST.get('price')
+        customer = request.POST.get('customer')
+        quantity = request.POST.get('quantity')
+        code = 'USD'
+        print(product_name)
 
-    #     splitted_product_name = product_name.split(",")
-    #     for i in splitted_product_name:
-    #         pass
+        splitted_product_name = product_name.split(",")
+        for i in splitted_product_name:
+            pass
 
-    #     # create new order model
-    #     get_vendor = User.objects.get(email=vendor)
-    #     get_product = Product.objects.get(name=product_name, vendor=get_vendor)
+        # create new order model
+        get_vendor = User.objects.get(email=vendor)
+        get_product = Product.objects.get(name=product_name, vendor=get_vendor)
 
-    #     create_new_order = OrderModel.objects.create(
-    #         product_vendor = get_vendor,
-    #         product_name = get_product,
-    #         product_price = price,
-    #         customer = User.objects.get(username=customer),
-    #     )
-    #     create_new_order.quantity += int(quantity)
-    #     #save order model
-    #     create_new_order.save()
+        create_new_order = OrderModel.objects.create(
+            product_vendor = get_vendor,
+            product_name = get_product,
+            product_price = price,
+            customer = User.objects.get(username=customer),
+        )
+        create_new_order.quantity += int(quantity)
+        #save order model
+        create_new_order.save()
 
-    #     #details for paypal payment
-    #     host = request.get_host()
-    #     paypal_dict = {
-    #         'business': settings.PAYPAL_RECEIVER_EMAIL,
-    #         'amount': price,
-    #         'item_name': product_name,
-    #         # 'invoice': str(uuid.uuid4()),
-    #         'invoice': str(create_new_order.id),
-    #         'currency_code': code,
-    #         'quantity': quantity,
-    #         'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-    #         'return_url': f'http://{host}{reverse("paypal-return")}',
-    #         'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
-    #     }
-    #     # paypal form
-    #     form  = PayPalPaymentsForm(initial=paypal_dict)
-    #     context = {
-    #         'form': form
-    #         }
+        #details for paypal payment
+        host = request.get_host()
+        paypal_dict = {
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': price,
+            'item_name': product_name,
+            # 'invoice': str(uuid.uuid4()),
+            'invoice': str(create_new_order.id),
+            'currency_code': code,
+            'quantity': quantity,
+            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+            'return_url': f'http://{host}{reverse("paypal-return")}',
+            'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
+        }
+        # paypal form
+        form  = PayPalPaymentsForm(initial=paypal_dict)
+        context = {
+            'form': form
+            }
     return render(request, 'send.html')
     
 
@@ -100,4 +98,7 @@ def paypal_cancel(request):
     # return HttpResponse('You  order has been cancelled')
     messages.error(request, 'You  order has been cancelled')
     return redirect('home')
+
+
+
 
