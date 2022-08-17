@@ -187,44 +187,47 @@ def ForgotPassword(request):
 def ResetPasswordView(request, username, code):
     if request.method == 'POST':
         get_user = User.objects.get(username=username)
-        get_code = UserLoginCode.objects.get(user=get_user, code=code)
         # getting user inputs from frontend
         password = request.data.get('password')
         confirm_password = request.data.get('verifyPassword')
 
-        # validate passwords
-        if len(password) < 5:
-            return Response(data='Passwords cannot be less than 5 characters')
+        get_code = UserLoginCode.objects.get(user=get_user, code=code)
+        if get_code:
+            # validate passwords
+            if len(password) < 5:
+                return Response(data='Passwords cannot be less than 5 characters')
 
-        if password != confirm_password:
-            return Response(data='Passwords do not match, try again')
+            if password != confirm_password:
+                return Response(data='Passwords do not match, try again')
 
-        #check if code is still valid
-        expiration_date = get_code.expiration
-        year = expiration_date.split('-')[0]
-        month = expiration_date.split('-')[1].strip('0')
-        split_to_two = expiration_date.split(' ')[1]
-        split_for_date = expiration_date.split(' ')[0]
-        day = split_for_date.split('-')[2]
-        hour = split_to_two.split(':')[0]
-      
-        minute = split_to_two.split(':')[1]
+            #check if code is still valid
+            expiration_date = get_code.expiration
+            year = expiration_date.split('-')[0]
+            month = expiration_date.split('-')[1].strip('0')
+            split_to_two = expiration_date.split(' ')[1]
+            split_for_date = expiration_date.split(' ')[0]
+            day = split_for_date.split('-')[2]
+            hour = split_to_two.split(':')[0]
+        
+            minute = split_to_two.split(':')[1]
 
-        code_expiration_date = datetime.datetime(int(year), int(month), int(day), int(hour), int(minute))
-        current_time = datetime.datetime.now()
+            code_expiration_date = datetime.datetime(int(year), int(month), int(day), int(hour), int(minute))
+            current_time = datetime.datetime.now()
 
-        #if link has expired
-        if current_time > code_expiration_date:
-            get_code.delete() # delete code after use
-            return Response(data='This link has expired. Proceed to the forgot password reset page to get another link.')
+            #if link has expired
+            if current_time > code_expiration_date:
+                get_code.delete() # delete code after use
+                return Response(data='This link has expired. Proceed to the forgot password reset page to get another link.')
 
-        #save password is link is still valid
+            #save password is link is still valid
+            else:
+                #save new password after validation
+                get_user.set_password(confirm_password)
+                get_user.save()
+                get_code.delete() # delete code after use
+                # redirect to login page after password reset
+                return Response(data='Password successfully changed. Login now')
         else:
-            #save new password after validation
-            get_user.set_password(confirm_password)
-            get_user.save()
-            get_code.delete() # delete code after use
-            # redirect to login page after password reset
-            return Response(data='Password successfully changed. Login now')
+            return Response(data='This link has expired or does not exist. Proceed to the forgot password reset page to get another link.')
 
     # return render(request, 'AuthenticationApp/reset_password.html')

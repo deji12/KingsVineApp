@@ -4,11 +4,21 @@ from django.test import TestCase
 import requests
 import json
 
-url = 'http://127.0.0.1:8000/auth/forgot-password/'
+# url = 'http://127.0.0.1:8000/auth/forgot-password/'
+# response = requests.post(
+#     url,
+#     json = {
+#         'email': 'adesolaayodeji53@gmail.com'
+#     }
+# )
+# print(response._content)
+
+url = 'http://127.0.0.1:8000/auth/reset-password/admin/248831/'
 response = requests.post(
     url,
     json = {
-        'email': 'adesolaayodeji53@gmail.com'
+        'password': 'theprotonguy',
+        'verifyPassword': 'theprotonguy'
     }
 )
 print(response._content)
